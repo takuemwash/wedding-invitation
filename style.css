@@ -1538,3 +1538,51 @@ section {
         grid-template-columns: 1fr;
     }
 }
+
+/* Private invitation welcome screen */
+[hidden] { display: none !important; }
+.invitation-gate {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    padding: 28px 16px;
+}
+.gate-card {
+    width: 100%;
+    max-width: 460px;
+    padding: 36px 28px;
+    text-align: center;
+    background: rgba(250,246,240,0.97);
+    border: 1px solid var(--color-gold);
+    border-radius: 24px;
+    box-shadow: var(--shadow-deep);
+}
+.gate-monogram {
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 24px;
+    border: 1px solid var(--color-gold);
+    border-radius: 50%;
+    color: var(--color-gold-dark);
+    font-family: var(--font-heading);
+    font-size: 2rem;
+}
+.gate-card h1 { font-size: 2.8rem; line-height: 1.1; margin: 12px 0 20px; }
+.gate-card h1 span { display: block; font-family: var(--font-script); font-size: 2rem; margin: 8px 0; }
+.gate-welcome { color: var(--text-secondary); line-height: 1.7; margin-bottom: 26px; }
+.gate-card form { text-align: left; }
+.gate-card label { display: block; font-weight: 600; margin-bottom: 8px; }
+.gate-password-row { display: flex; border: 1px solid var(--color-sand); border-radius: 12px; background: #fff; overflow: hidden; }
+.gate-password-row:focus-within { outline: 2px solid var(--color-gold); outline-offset: 2px; }
+.gate-password-row input { min-width: 0; width: 100%; border: none; outline: none; padding: 14px 12px; font: 16px var(--font-body); }
+.gate-password-row button { background: transparent; border: none; padding: 0 14px; min-height: 48px; color: var(--color-chocolate); font: 600 0.85rem var(--font-body); cursor: pointer; }
+.gate-error { min-height: 24px; margin: 8px 0; color: #9b3025; font-size: 0.85rem; }
+.gate-card .btn-submit-gold { width: 100%; min-height: 48px; }
+.gate-private { font-size: 0.78rem; line-height: 1.6; color: var(--text-muted); margin-top: 24px; }
+@media (max-width: 550px) {
+    .gate-card { padding: 28px 20px; }
+    .gate-card h1 { font-size: 2.5rem; }
+}

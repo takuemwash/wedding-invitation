@@ -36,6 +36,14 @@ window.addEventListener('pageshow', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    initInvitationGate();
+});
+
+function openInvitation() {
+    document.getElementById('invitationGate').hidden = true;
+    document.getElementById('invitationContent').hidden = false;
+    history.replaceState(null, '', location.pathname + location.search + '#hero');
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     initWeddingState();
     initCountdown();
     initSwatchesInteractive();
@@ -44,7 +52,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initCalendarLinks();
     initAudioPlayer();
-});
+}
+
+function initInvitationGate() {
+    const form = document.getElementById('invitationPasswordForm');
+    const input = document.getElementById('invitationPassword');
+    const error = document.getElementById('gateError');
+    const button = document.getElementById('unlockInvitationBtn');
+    const showButton = document.getElementById('showInvitationPassword');
+    showButton.addEventListener('click', () => {
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        showButton.textContent = show ? 'Hide' : 'Show';
+        showButton.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        showButton.setAttribute('aria-pressed', String(show));
+    });
+    input.addEventListener('input', () => {
+        error.textContent = '';
+        input.removeAttribute('aria-invalid');
+    });
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (button.disabled) return;
+        button.disabled = true;
+        error.textContent = '';
+        try {
+            // This is a browser-level invitation gate, not server-side authorization.
+            const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.value));
+            const hash = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+            if (hash !== '51aab9f9d3b8bc1720529b43e16abe1669dc76e4ee69fff3ff96a8c72a535216') {
+                error.textContent = 'That password does not match. Please check your invitation and try again.';
+                input.setAttribute('aria-invalid', 'true');
+                input.focus();
+                return;
+            }
+            input.value = '';
+            openInvitation();
+        } catch (err) {
+            error.textContent = 'The invitation could not open. Please refresh and try again.';
+        } finally {
+            button.disabled = false;
+        }
+    });
+}
 
 /* ==========================================
    1. STATE MANAGEMENT & UI UPDATE

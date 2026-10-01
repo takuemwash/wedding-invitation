@@ -19,9 +19,29 @@
 
     <!-- The music player loads only when a guest taps Play Music. -->
 
-    <link rel="stylesheet" href="style.css?v=20261001-4">
+    <link rel="stylesheet" href="style.css?v=20261001-5">
 </head>
 <body>
+    <div class="invitation-gate" id="invitationGate">
+        <div class="gate-card">
+            <span class="gate-monogram" aria-hidden="true">T & H</span>
+            <p class="sub-header">YOU ARE CORDIALLY INVITED</p>
+            <h1>Takudzwa <span>&</span> Huldah</h1>
+            <p class="gate-welcome">With joyful hearts, we invite you to celebrate our wedding and the beginning of our new chapter together.</p>
+            <form id="invitationPasswordForm">
+                <label for="invitationPassword">Your invitation password</label>
+                <div class="gate-password-row">
+                    <input id="invitationPassword" type="password" autocomplete="current-password" required aria-describedby="gateError" placeholder="Enter your password">
+                    <button type="button" id="showInvitationPassword" aria-label="Show password" aria-pressed="false">Show</button>
+                </div>
+                <p id="gateError" class="gate-error" role="alert"></p>
+                <button type="submit" class="btn-submit-gold" id="unlockInvitationBtn">Open Our Invitation <span aria-hidden="true">→</span></button>
+            </form>
+            <p class="gate-private">This invitation is intended especially for you. Please keep the website and password private.</p>
+            <noscript>Please enable JavaScript to open your invitation.</noscript>
+        </div>
+    </div>
+    <div id="invitationContent" hidden>
 
     <!-- Audio Element for MP3 Fallback -->
     <audio id="weddingAudio" loop preload="auto"></audio>
@@ -441,7 +461,8 @@
         </button>
     </div>
 
-    <script src="app.js?v=20261001-4"></script>
+    </div>
+    <script src="app.js?v=20261001-5"></script>
 </body>
 </html>
 
