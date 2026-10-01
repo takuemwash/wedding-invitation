@@ -17,8 +17,7 @@
     <!-- Canvas Confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <!-- YouTube iFrame API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <!-- The music player loads only when a guest taps Play Music. -->
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -32,23 +31,15 @@
         <div id="youtubePlayer"></div>
     </div>
 
-    <!-- Floating Audio Control -->
-    <div class="audio-control" id="audioControl" title="Toggle Wedding Music">
-        <button id="musicToggleBtn" aria-label="Toggle background music">
-            <i class="fa-solid fa-music"></i>
-            <span id="musicText">Play Music</span>
-        </button>
-    </div>
-
     <!-- Sticky Navigation Bar -->
     <header class="top-nav">
         <div class="nav-brand">T & H</div>
         <nav class="nav-links">
-            <a href="#hero">The Card</a>
-            <a href="#palette">Brown Shades</a>
-            <a href="#details">Event Details</a>
-            <a href="#contacts">RSVP Contacts</a>
-            <a href="#rsvp" class="nav-rsvp-btn">RSVP Now</a>
+            <a href="#hero">Card</a>
+            <a href="#palette">Colours</a>
+            <a href="#details">Details</a>
+            <a href="#contacts">Contacts</a>
+            <a href="#rsvp" class="nav-rsvp-btn">RSVP</a>
         </nav>
         <div class="admin-controls">
             <button id="toggleEditBtn" class="btn-outline-gold"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
@@ -544,6 +535,13 @@
         <p>Crafted with love for the Wedding of <strong>Takudzwa Mwashita & Huldah Jongwe</strong></p>
         <p class="footer-sub">Brown Shades & Champagne Luxury Theme • 6 January 2027</p>
     </footer>
+
+    <div class="audio-control" id="audioControl" title="Toggle Wedding Music">
+        <button id="musicToggleBtn" aria-label="Toggle background music">
+            <i class="fa-solid fa-music"></i>
+            <span id="musicText">Play Music</span>
+        </button>
+    </div>
 
     <script src="app.js"></script>
 </body>

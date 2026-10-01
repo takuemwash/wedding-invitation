@@ -1396,6 +1396,8 @@ section {
 
 /* Responsive */
 @media (max-width: 850px) {
+    html { scroll-padding-top: 120px; }
+    body { background-attachment: scroll; }
     section {
         min-height: auto;
         padding: 24px 14px;
@@ -1405,8 +1407,47 @@ section {
         grid-template-columns: 1fr;
     }
 
+    .hero-section {
+        height: auto;
+        min-height: 0;
+        justify-content: flex-start;
+        overflow: visible;
+        padding: 18px 14px 24px;
+    }
+
     .official-card-img, .swatch-img {
-        max-height: 360px;
+        max-height: none;
+        object-fit: contain;
+    }
+
+    .hero-quick-bar {
+        flex-direction: column;
+        border-radius: 18px;
+        padding: 14px;
+        gap: 14px;
+    }
+
+    .hero-quick-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .hero-quick-actions .btn-primary-gold,
+    .hero-quick-actions .btn-secondary-brown {
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 8px;
+        white-space: normal;
+        text-align: center;
+    }
+
+    .calendar-dropdown { min-width: 0; }
+    .calendar-dropdown .dropdown-content {
+        left: auto;
+        right: 0;
+        transform: none;
     }
     
     .top-nav {
@@ -1416,12 +1457,38 @@ section {
     }
     
     .nav-links {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
         order: 3;
         width: 100%;
-        justify-content: center;
-        overflow-x: auto;
-        padding-top: 4px;
+        justify-content: flex-start;
+        overflow-x: visible;
+        padding: 6px 0 2px;
+        gap: 4px;
     }
+    .nav-links a {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 4px;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+    .admin-controls button { min-height: 36px; }
+    .audio-control {
+        position: static;
+        display: flex;
+        justify-content: center;
+        padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
+    }
+    .audio-control button { min-height: 44px; }
+    input, select, textarea { font-size: 16px !important; }
+    .btn-submit-gold, .contact-actions a { min-height: 48px; }
+    .modal-overlay { padding: 12px; }
+    .modal-actions, .table-actions { flex-wrap: wrap; }
+    footer { padding-bottom: 20px; }
 }
 
 @media (max-width: 550px) {
@@ -1442,8 +1509,17 @@ section {
     }
     
     .rsvp-container {
-        padding: 16px 12px;
+        padding: 24px 18px;
     }
+    .section-header { padding: 16px 14px; }
+    .section-header h2 { font-size: 1.8rem; line-height: 1.15; }
+    .section-desc { margin-top: 8px; line-height: 1.6; }
+    .glass-card { padding: 20px 16px; }
+    .countdown-mini { flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .timer-unit { font-size: 1.2rem; }
+    .timer-unit small { font-size: 0.7rem; }
+    .timer-mini-grid { padding: 6px 10px; }
+    .image-zoom-card { max-width: 100%; }
     
     .dashboard-stats {
         grid-template-columns: 1fr;

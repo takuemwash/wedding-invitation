@@ -6,6 +6,9 @@
  * Strictly by invitation only & Strictly No Children
  */
 
+// Web3Forms public form access key, issued for the RSVP recipient's email.
+const RSVP_ACCESS_KEY = '239fbfdf-099a-4c8c-92ba-b05e17c94e58';
+
 // Initial Default State
 const defaultWeddingState = {
     groom: 'Takudzwa Mwashita',
@@ -251,7 +254,7 @@ function initRsvpForm() {
     }
 
     if (form) {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const isAttending = document.querySelector('input[name="attendance"]:checked').value === 'attending';
@@ -281,22 +284,23 @@ function initRsvpForm() {
                 submittedAt: new Date().toLocaleString()
             };
 
-            // Save to local storage for Admin guest dashboard
-            const guests = getGuestList();
-            guests.unshift(guestEntry);
-            saveGuestList(guests);
-
-            // Optional async email dispatch to takudzwamwashita@gmail.com
+            const submitButton = document.getElementById('submitRsvpBtn');
+            if (submitButton.disabled) return;
+            const originalButton = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending RSVP…';
             try {
-                fetch('https://api.web3forms.com/submit', {
+                if (!RSVP_ACCESS_KEY) {
+                    throw new Error('Online RSVP delivery is not ready yet. Please contact an RSVP coordinator using the WhatsApp links above.');
+                }
+                const response = await fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        access_key: 'YOUR_ACCESS_KEY_OR_EMAIL',
-                        to: 'takudzwamwashita@gmail.com',
+                        access_key: RSVP_ACCESS_KEY,
                         subject: `New Wedding RSVP: ${name} (${isAttending ? 'Attending' : 'Declined'})`,
                         from_name: 'Takudzwa & Huldah Wedding RSVP Portal',
                         guest_name: name,
@@ -306,12 +310,29 @@ function initRsvpForm() {
                         guest_wishes: message || 'N/A',
                         submission_date: guestEntry.submittedAt
                     })
-                }).catch(() => {});
-            } catch (err) {}
-
-            showConfirmationModal(guestEntry);
-            form.reset();
-            optAttending.click();
+                });
+                const result = await response.json();
+                if (!response.ok || result.success !== true) {
+                    throw new Error('Your RSVP could not be sent. Please try again or contact an RSVP coordinator using the WhatsApp links above.');
+                }
+                // Keep a browser-local copy only after the email service accepts the RSVP.
+                try {
+                    const guests = getGuestList();
+                    guests.unshift(guestEntry);
+                    saveGuestList(guests);
+                } catch (storageError) {
+                    console.warn('RSVP sent, but a local copy could not be saved.');
+                }
+                showConfirmationModal(guestEntry);
+                form.reset();
+                optAttending.click();
+                plusOneGroup.style.display = 'none';
+            } catch (err) {
+                alert(err.message || 'Your RSVP could not be sent. Please try again or contact an RSVP coordinator.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButton;
+            }
         });
     }
 
@@ -591,43 +612,18 @@ function initAudioPlayer() {
     const musicBtn = document.getElementById('musicToggleBtn');
     const state = getWeddingState();
 
-    setupMusicSource(state.songUrl);
-
     if (musicBtn) {
         musicBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (isAudioPlaying) {
                 pauseMusic();
             } else {
+                setupMusicSource(state.songUrl);
                 playMusic();
             }
         });
     }
 
-    // Try instant autoplay on load
-    attemptAutoplay();
-
-    // Browser policy fallback: Start music on user's first touch/click anywhere on page
-    const startAudioOnFirstTouch = () => {
-        if (!isAudioPlaying) {
-            playMusic();
-        }
-        window.removeEventListener('click', startAudioOnFirstTouch);
-        window.removeEventListener('touchstart', startAudioOnFirstTouch);
-        window.removeEventListener('scroll', startAudioOnFirstTouch);
-        window.removeEventListener('keydown', startAudioOnFirstTouch);
-    };
-
-    window.addEventListener('click', startAudioOnFirstTouch, { once: true });
-    window.addEventListener('touchstart', startAudioOnFirstTouch, { once: true });
-    window.addEventListener('scroll', startAudioOnFirstTouch, { once: true });
-    window.addEventListener('keydown', startAudioOnFirstTouch, { once: true });
-}
-
-function attemptAutoplay() {
-    setTimeout(() => {
-        playMusic();
-    }, 800);
 }
 
 function extractYouTubeId(url) {
@@ -644,6 +640,12 @@ function setupMusicSource(songUrl) {
     if (ytId) {
         audio.pause();
         audio.src = '';
+        if (!window.YT && !document.getElementById('youtubeApiScript')) {
+            const script = document.createElement('script');
+            script.id = 'youtubeApiScript';
+            script.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(script);
+        }
         initYouTubePlayer(ytId);
     } else if (songUrl && (songUrl.endsWith('.mp3') || songUrl.startsWith('http') || songUrl.startsWith('assets/'))) {
         audio.src = songUrl;
