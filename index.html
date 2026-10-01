@@ -19,7 +19,7 @@
 
     <!-- The music player loads only when a guest taps Play Music. -->
 
-    <link rel="stylesheet" href="style.css?v=20261001-3">
+    <link rel="stylesheet" href="style.css?v=20261001-4">
 </head>
 <body>
 
@@ -41,10 +41,6 @@
             <a href="#contacts">Contacts</a>
             <a href="#rsvp" class="nav-rsvp-btn">RSVP</a>
         </nav>
-        <div class="admin-controls">
-            <button id="toggleEditBtn" class="btn-outline-gold"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
-            <button id="toggleDashboardBtn" class="btn-outline-brown"><i class="fa-solid fa-chart-pie"></i> Guest List</button>
-        </div>
     </header>
 
     <main>
@@ -393,101 +389,6 @@
             </div>
         </section>
 
-        <!-- ADMIN LIVE DETAILS EDITOR FORM -->
-        <div class="admin-editor-panel" id="adminEditorPanel" style="display: none;">
-            <div class="editor-header">
-                <h3><i class="fa-solid fa-sliders"></i> Customize Wedding Details (Couple Portal)</h3>
-                <button id="closeEditorBtn" class="close-btn">&times;</button>
-            </div>
-            <div class="editor-body">
-                <form id="detailsForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="editDate">Wedding Date</label>
-                            <input type="date" id="editDate" value="2027-01-06">
-                        </div>
-                        <div class="form-group">
-                            <label for="editTime">Event Time</label>
-                            <input type="text" id="editTime" value="10:00 AM – 5:00 PM">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="editGroom">Groom Name</label>
-                            <input type="text" id="editGroom" value="Takudzwa Mwashita">
-                        </div>
-                        <div class="form-group">
-                            <label for="editBride">Bride Name</label>
-                            <input type="text" id="editBride" value="Huldah Jongwe">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="editRsvpDeadline">RSVP Deadline</label>
-                            <input type="date" id="editRsvpDeadline" value="2026-12-20">
-                        </div>
-                        <div class="form-group">
-                            <label for="editSongUrl"><i class="fa-solid fa-music"></i> Custom Background Song URL</label>
-                            <input type="text" id="editSongUrl" value="https://youtu.be/JiZ9TJPTHaM?list=RDJiZ9TJPTHaM">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-primary-brown"><i class="fa-solid fa-floppy-disk"></i> Save & Apply Changes</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- ADMIN DASHBOARD MODAL (GUEST LIST SUMMARY) -->
-        <div class="modal-overlay" id="dashboardModal" style="display: none;">
-            <div class="modal-card">
-                <div class="modal-header">
-                    <h3><i class="fa-solid fa-clipboard-user"></i> Guest RSVP Responses Summary</h3>
-                    <button class="close-btn" id="closeDashboardBtn">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="dashboard-stats">
-                        <div class="stat-card">
-                            <span class="stat-num" id="statTotalRsvp">0</span>
-                            <span class="stat-label">Total Submissions</span>
-                        </div>
-                        <div class="stat-card stat-success">
-                            <span class="stat-num" id="statAttendingCount">0</span>
-                            <span class="stat-label">Attending Seats</span>
-                        </div>
-                        <div class="stat-card stat-decline">
-                            <span class="stat-num" id="statDecliningCount">0</span>
-                            <span class="stat-label">Declined</span>
-                        </div>
-                    </div>
-
-                    <div class="table-actions">
-                        <button id="exportCsvBtn" class="btn-small-gold"><i class="fa-solid fa-file-csv"></i> Download CSV</button>
-                        <button id="clearDataBtn" class="btn-small-danger"><i class="fa-solid fa-trash"></i> Reset Data</button>
-                    </div>
-
-                    <div class="table-wrapper">
-                        <table class="guest-table" id="guestTable">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Status</th>
-                                    <th>Seats</th>
-                                    <th>Plus One</th>
-                                    <th>Wishes</th>
-                                    <th>Time</th>
-                                </tr>
-                            </thead>
-                            <tbody id="guestTableBody">
-                                <!-- Dynamic rows -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- RSVP CONFIRMATION MODAL -->
         <div class="modal-overlay" id="confirmationModal" style="display: none;">
             <div class="modal-card confirmation-card shadow-gold">
@@ -540,7 +441,8 @@
         </button>
     </div>
 
-    <script src="app.js?v=20261001-3"></script>
+    <script src="app.js?v=20261001-4"></script>
 </body>
 </html>
+
 

@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSwatchesInteractive();
     initImageZoom();
     initRsvpForm();
-    initAdminControls();
+
     initCalendarLinks();
     initAudioPlayer();
 });
@@ -224,7 +224,6 @@ function getGuestList() {
 
 function saveGuestList(list) {
     localStorage.setItem('takudzwa_huldah_wedding_guests_v3', JSON.stringify(list));
-    renderGuestTable();
 }
 
 function initRsvpForm() {
@@ -399,144 +398,6 @@ function showConfirmationModal(guest) {
 /* ==========================================
    6. ADMIN DASHBOARD & EDIT CONTROLS
    ========================================== */
-function initAdminControls() {
-    const toggleEditBtn = document.getElementById('toggleEditBtn');
-    const closeEditorBtn = document.getElementById('closeEditorBtn');
-    const adminEditorPanel = document.getElementById('adminEditorPanel');
-    const detailsForm = document.getElementById('detailsForm');
-
-    const toggleDashboardBtn = document.getElementById('toggleDashboardBtn');
-    const closeDashboardBtn = document.getElementById('closeDashboardBtn');
-    const dashboardModal = document.getElementById('dashboardModal');
-    const exportCsvBtn = document.getElementById('exportCsvBtn');
-    const clearDataBtn = document.getElementById('clearDataBtn');
-
-    if (toggleEditBtn) {
-        toggleEditBtn.addEventListener('click', () => {
-            adminEditorPanel.style.display = 'block';
-        });
-    }
-
-    if (closeEditorBtn) {
-        closeEditorBtn.addEventListener('click', () => {
-            adminEditorPanel.style.display = 'none';
-        });
-    }
-
-    if (detailsForm) {
-        detailsForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const date = document.getElementById('editDate').value;
-            const timeText = document.getElementById('editTime').value;
-            const groom = document.getElementById('editGroom').value;
-            const bride = document.getElementById('editBride').value;
-            const rsvpDeadline = document.getElementById('editRsvpDeadline').value;
-            const songUrl = document.getElementById('editSongUrl').value;
-
-            const updatedState = {
-                ...getWeddingState(),
-                date: date + 'T10:00:00',
-                timeText,
-                groom,
-                bride,
-                rsvpDeadline,
-                songUrl
-            };
-
-            saveWeddingState(updatedState);
-            adminEditorPanel.style.display = 'none';
-            alert('Wedding details updated successfully!');
-        });
-    }
-
-    if (toggleDashboardBtn) {
-        toggleDashboardBtn.addEventListener('click', () => {
-            renderGuestTable();
-            dashboardModal.style.display = 'flex';
-        });
-    }
-
-    if (closeDashboardBtn) {
-        closeDashboardBtn.addEventListener('click', () => {
-            dashboardModal.style.display = 'none';
-        });
-    }
-
-    if (exportCsvBtn) {
-        exportCsvBtn.addEventListener('click', exportGuestsToCSV);
-    }
-
-    if (clearDataBtn) {
-        clearDataBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to clear all recorded RSVP responses?')) {
-                localStorage.removeItem('takudzwa_huldah_wedding_guests_v3');
-                renderGuestTable();
-            }
-        });
-    }
-}
-
-function renderGuestTable() {
-    const guests = getGuestList();
-    const tbody = document.getElementById('guestTableBody');
-    const statTotal = document.getElementById('statTotalRsvp');
-    const statAttending = document.getElementById('statAttendingCount');
-    const statDeclining = document.getElementById('statDecliningCount');
-
-    let attendingCount = 0;
-    let decliningCount = 0;
-
-    tbody.innerHTML = '';
-
-    guests.forEach(g => {
-        if (g.attendance === 'Attending') attendingCount += (g.guestsCount || 1);
-        else decliningCount++;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><strong>${escapeHtml(g.name)}</strong></td>
-            <td><span class="tag-badge ${g.attendance === 'Attending' ? 'gold-tag' : 'alert-tag'}">${g.attendance}</span></td>
-            <td>${g.guestsCount || 0}</td>
-            <td>${escapeHtml(g.plusOneNames || '-')}</td>
-            <td><em>${escapeHtml(g.message || '-')}</em></td>
-            <td><small>${g.submittedAt}</small></td>
-        `;
-        tbody.appendChild(tr);
-    });
-
-    statTotal.textContent = guests.length;
-    statAttending.textContent = attendingCount;
-    statDeclining.textContent = decliningCount;
-}
-
-function exportGuestsToCSV() {
-    const guests = getGuestList();
-    if (guests.length === 0) {
-        alert('No guest responses recorded yet.');
-        return;
-    }
-
-    const headers = ['Ticket ID', 'Full Name', 'Status', 'Seats Count', 'Plus One Name', 'Message', 'Submitted Time'];
-    const rows = guests.map(g => [
-        `"${g.id}"`,
-        `"${g.name}"`,
-        `"${g.attendance}"`,
-        g.guestsCount || 0,
-        `"${g.plusOneNames || ''}"`,
-        `"${(g.message || '').replace(/"/g, '""')}"`,
-        `"${g.submittedAt}"`
-    ]);
-
-    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Wedding_Guest_List_Takudzwa_Huldah_${new Date().toISOString().slice(0, 10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
 function escapeHtml(str) {
     return str.replace(/[&<>'"]/g, 
         tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
@@ -751,3 +612,4 @@ function updateMusicButtonUI(isPlaying) {
         musicBtn.style.boxShadow = 'var(--shadow-deep)';
     }
 }
+
