@@ -627,6 +627,7 @@ function initYouTubePlayer(videoId) {
                 },
                 events: {
                     onReady: (event) => {
+                        event.target.setVolume(35);
                         isYtReady = true;
                         event.target.playVideo();
                     },
