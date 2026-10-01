@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitation & RSVP | Takudzwa Mwashita & Huldah Jongwe</title>
+    <meta name="description" content="Official wedding celebration & RSVP portal for Takudzwa Mwashita & Huldah Jongwe. 6 January 2027, 10:00 AM - 5:00 PM. Strictly by invitation only & strictly no children.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- YouTube iFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Audio Element for MP3 Fallback -->
+    <audio id="weddingAudio" loop preload="auto"></audio>
+
+    <!-- Hidden YouTube Background Audio Player -->
+    <div id="youtubePlayerContainer" style="position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none;">
+        <div id="youtubePlayer"></div>
+    </div>
+
+    <!-- Floating Audio Control -->
+    <div class="audio-control" id="audioControl" title="Toggle Wedding Music">
+        <button id="musicToggleBtn" aria-label="Toggle background music">
+            <i class="fa-solid fa-music"></i>
+            <span id="musicText">Play Music</span>
+        </button>
+    </div>
+
+    <!-- Sticky Navigation Bar -->
+    <header class="top-nav">
+        <div class="nav-brand">T & H</div>
+        <nav class="nav-links">
+            <a href="#hero">The Card</a>
+            <a href="#palette">Brown Shades</a>
+            <a href="#details">Event Details</a>
+            <a href="#contacts">RSVP Contacts</a>
+            <a href="#rsvp" class="nav-rsvp-btn">RSVP Now</a>
+        </nav>
+        <div class="admin-controls">
+            <button id="toggleEditBtn" class="btn-outline-gold"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+            <button id="toggleDashboardBtn" class="btn-outline-brown"><i class="fa-solid fa-chart-pie"></i> Guest List</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO / THE CARD SECTION -->
+        <section id="hero" class="hero-section">
+            <div class="hero-card-showcase">
+                
+                <!-- The Real Wedding Card Mockup -->
+                <div class="hero-card-frame">
+                    <img src="assets/wedding_card.jpg" alt="Takudzwa Mwashita and Huldah Jongwe Wedding Invitation Card" class="official-card-img" id="cardZoomImg">
+                </div>
+
+                <!-- Sleek Floating Action & Countdown Bar -->
+                <div class="hero-quick-bar glass-bar">
+                    <div class="countdown-mini">
+                        <span class="countdown-mini-label"><i class="fa-solid fa-hourglass-half"></i> COUNTDOWN:</span>
+                        <div class="timer-mini-grid" id="countdownTimer">
+                            <span class="timer-unit"><strong id="days">--</strong><small>d</small></span>
+                            <span class="timer-dot">:</span>
+                            <span class="timer-unit"><strong id="hours">--</strong><small>h</small></span>
+                            <span class="timer-dot">:</span>
+                            <span class="timer-unit"><strong id="minutes">--</strong><small>m</small></span>
+                            <span class="timer-dot">:</span>
+                            <span class="timer-unit"><strong id="seconds">--</strong><small>s</small></span>
+                        </div>
+                    </div>
+
+                    <div class="hero-quick-actions">
+                        <a href="#rsvp" class="btn-primary-gold"><i class="fa-solid fa-envelope-open-text"></i> Respond to RSVP</a>
+                        <div class="dropdown calendar-dropdown">
+                            <button class="btn-secondary-brown" id="calendarBtn"><i class="fa-regular fa-calendar-plus"></i> Add to Calendar</button>
+                            <div class="dropdown-content" id="calendarMenu">
+                                <a href="#" id="addToGoogleCal"><i class="fa-brands fa-google"></i> Google Calendar</a>
+                                <a href="#" id="addToICal"><i class="fa-brands fa-apple"></i> Apple / Outlook iCal</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- BROWN SHADES & DRESS CODE COLOR PALETTE -->
+        <section id="palette" class="palette-section">
+            <div class="section-header">
+                <span class="sub-header">ATTIRE & MOODBOARD</span>
+                <h2>Brown Shades & Dress Code</h2>
+                <p class="section-desc">We invite our guests to dress in sophisticated shades of brown, champagne, and warm neutral tones.</p>
+            </div>
+
+            <div class="palette-container">
+                <!-- Swatch Photo Showcase -->
+                <div class="palette-visual-card" id="openSwatchZoomBtn">
+                    <div class="swatch-image-wrapper">
+                        <img src="assets/brown_shades_swatches.jpg" alt="Brown Shades Wedding Fabric Swatches" class="swatch-img" id="swatchZoomImg">
+                        <div class="swatch-overlay-badge">
+                            <span><i class="fa-solid fa-palette"></i> Official Color Palette</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Color Selector -->
+                <div class="palette-details-card glass-card">
+                    <div class="palette-intro">
+                        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Curated Color Shades</h3>
+                        <p>Click on any shade to see styling notes and color codes:</p>
+                    </div>
+
+                    <div class="swatches-interactive-grid" id="swatchesGrid">
+                        <!-- Swatch 1: Beige -->
+                        <div class="swatch-item active" data-name="Beige" data-sub="Warm & Soft" data-hex="#D9C3B0" data-desc="A gentle, creamy neutral that adds warmth and effortless grace to silks, linens, and tailored suits.">
+                            <div class="swatch-color" style="background-color: #D9C3B0;"></div>
+                            <div class="swatch-info">
+                                <strong>Beige</strong>
+                                <span>Warm & Soft</span>
+                            </div>
+                        </div>
+
+                        <!-- Swatch 2: Sand -->
+                        <div class="swatch-item" data-name="Sand" data-sub="Calm & Natural" data-hex="#C8B195" data-desc="An organic, sun-kissed earthy tone perfect for blazers, flowing gowns, and refined accessories.">
+                            <div class="swatch-color" style="background-color: #C8B195;"></div>
+                            <div class="swatch-info">
+                                <strong>Sand</strong>
+                                <span>Calm & Natural</span>
+                            </div>
+                        </div>
+
+                        <!-- Swatch 3: Ivory -->
+                        <div class="swatch-item" data-name="Ivory" data-sub="Pure & Elegant" data-hex="#F5EFEB" data-desc="A radiant, soft off-white tone that complements warm chocolate tones with pure elegance.">
+                            <div class="swatch-color" style="background-color: #F5EFEB; border: 1px solid #D6BD98;"></div>
+                            <div class="swatch-info">
+                                <strong>Ivory</strong>
+                                <span>Pure & Elegant</span>
+                            </div>
+                        </div>
+
+                        <!-- Swatch 4: Cocoa -->
+                        <div class="swatch-item" data-name="Cocoa" data-sub="Rich & Smooth" data-hex="#6E473B" data-desc="A medium velvety brown with warm undertones that exudes timeless luxury and charm.">
+                            <div class="swatch-color" style="background-color: #6E473B;"></div>
+                            <div class="swatch-info">
+                                <strong>Cocoa</strong>
+                                <span>Rich & Smooth</span>
+                            </div>
+                        </div>
+
+                        <!-- Swatch 5: Chocolate -->
+                        <div class="swatch-item" data-name="Chocolate" data-sub="Deep & Indulgent" data-hex="#4A2C21" data-desc="Deep, rich, and decadent dark brown. Excellent for tailored suits, velvet jackets, and dresses.">
+                            <div class="swatch-color" style="background-color: #4A2C21;"></div>
+                            <div class="swatch-info">
+                                <strong>Chocolate</strong>
+                                <span>Deep & Indulgent</span>
+                            </div>
+                        </div>
+
+                        <!-- Swatch 6: Espresso -->
+                        <div class="swatch-item" data-name="Espresso" data-sub="Bold & Intense" data-hex="#2C1D18" data-desc="The deepest shade of coffee brown—striking, formal, and authoritative for sophisticated refinement.">
+                            <div class="swatch-color" style="background-color: #2C1D18;"></div>
+                            <div class="swatch-info">
+                                <strong>Espresso</strong>
+                                <span>Bold & Intense</span>
+                            </div>
+                        </div>
+
+                        <!-- Swatch 7: Sugar -->
+                        <div class="swatch-item" data-name="Sugar" data-sub="Sweet & Subtle" data-hex="#F4ECE4" data-desc="A delicate creamy tone that balances darker espresso shades with soft light harmony.">
+                            <div class="swatch-color" style="background-color: #F4ECE4; border: 1px solid #D6BD98;"></div>
+                            <div class="swatch-info">
+                                <strong>Sugar</strong>
+                                <span>Sweet & Subtle</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selected Swatch Preview Card -->
+                    <div class="selected-shade-box" id="selectedShadeBox">
+                        <div class="shade-header">
+                            <div class="shade-circle" id="previewShadeCircle" style="background-color: #D9C3B0;"></div>
+                            <div>
+                                <h4 id="previewShadeName">Beige</h4>
+                                <span class="shade-subtitle" id="previewShadeSub">Warm & Soft</span>
+                            </div>
+                            <button class="copy-hex-btn" id="copyHexBtn" title="Copy Color Hex"><i class="fa-regular fa-copy"></i> <span id="previewHex">#D9C3B0</span></button>
+                        </div>
+                        <p id="previewShadeDesc" class="shade-desc">A gentle, creamy neutral that adds warmth and effortless grace to silks, linens, and tailored suits.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVENT DETAILS SECTION -->
+        <section id="details" class="details-section">
+            <div class="section-header">
+                <span class="sub-header">EVENT SPECIFICATIONS</span>
+                <h2>Celebration Details & Schedule</h2>
+                <p class="section-desc">Key timing and guidelines for our special day.</p>
+            </div>
+
+            <div class="details-grid">
+                <!-- Date & Time Card -->
+                <div class="detail-card glass-card">
+                    <div class="detail-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                    <h3>Date & Time</h3>
+                    <p class="detail-highlight" id="displayFullDate">Wednesday, 6 January 2027</p>
+                    <p class="detail-sub" id="displayTime">10:00 AM – 5:00 PM</p>
+                    <span class="tag-badge">Full Day Celebration</span>
+                </div>
+
+                <!-- RSVP Deadline Card -->
+                <div class="detail-card glass-card">
+                    <div class="detail-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <h3>RSVP Deadline</h3>
+                    <p class="detail-highlight">20 December 2026</p>
+                    <p class="detail-sub">Please confirm attendance on or before this date.</p>
+                    <span class="tag-badge gold-tag">Confirmation Required</span>
+                </div>
+
+                <!-- Dress Code Card -->
+                <div class="detail-card glass-card">
+                    <div class="detail-icon"><i class="fa-solid fa-vest-patches"></i></div>
+                    <h3>Dress Code</h3>
+                    <p class="detail-highlight">Brown Shades & Formal Elegance</p>
+                    <p class="detail-sub">Beige, Sand, Cocoa, Chocolate, Espresso, Ivory & Sugar.</p>
+                    <span class="tag-badge">Formal Attire</span>
+                </div>
+
+                <!-- Strict Policy Card -->
+                <div class="detail-card glass-card">
+                    <div class="detail-icon"><i class="fa-solid fa-shield-heart"></i></div>
+                    <h3>Event Policy</h3>
+                    <p class="detail-highlight">Strictly by Invitation Only</p>
+                    <p class="detail-sub">Strictly No Children permitted.</p>
+                    <span class="tag-badge alert-tag">Strict Protocol</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- RSVP CONTACTS SECTION -->
+        <section id="contacts" class="contacts-section">
+            <div class="section-header">
+                <span class="sub-header">NEED ASSISTANCE?</span>
+                <h2>RSVP Contacts & Inquiries</h2>
+                <p class="section-desc">Reach out directly to our RSVP coordinators for confirmations or questions.</p>
+            </div>
+
+            <div class="contacts-grid">
+                <!-- Contact 1: Rufaro Govere -->
+                <div class="contact-card glass-card">
+                    <div class="contact-avatar">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div class="contact-info">
+                        <h3>Rufaro Govere</h3>
+                        <p class="contact-role">RSVP Coordinator</p>
+                        <a href="tel:+263773571221" class="contact-phone"><i class="fa-solid fa-phone"></i> +263 77 357 1221</a>
+                    </div>
+                    <div class="contact-actions">
+                        <a href="https://wa.me/263773571221?text=Hello%20Rufaro,%20I%20am%20messaging%20regarding%20the%20wedding%20of%20Takudzwa%20Mwashita%20and%20Huldah%20Jongwe." target="_blank" class="btn-whatsapp">
+                            <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+                        </a>
+                        <a href="tel:+263773571221" class="btn-call">
+                            <i class="fa-solid fa-phone"></i> Direct Call
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact 2: Hulder Jongwe -->
+                <div class="contact-card glass-card">
+                    <div class="contact-avatar">
+                        <i class="fa-solid fa-heart-circle-check"></i>
+                    </div>
+                    <div class="contact-info">
+                        <h3>Hulder Jongwe</h3>
+                        <p class="contact-role">RSVP Coordinator</p>
+                        <a href="tel:+263787896967" class="contact-phone"><i class="fa-solid fa-phone"></i> +263 78 789 6967</a>
+                    </div>
+                    <div class="contact-actions">
+                        <a href="https://wa.me/263787896967?text=Hello%20Hulder,%20I%20am%20messaging%20regarding%20the%20wedding%20of%20Takudzwa%20Mwashita%20and%20Huldah%20Jongwe." target="_blank" class="btn-whatsapp">
+                            <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp
+                        </a>
+                        <a href="tel:+263787896967" class="btn-call">
+                            <i class="fa-solid fa-phone"></i> Direct Call
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RSVP FORM SECTION (CLEANED UP: REMOVED PHONE, EMAIL, DIETARY) -->
+        <section id="rsvp" class="rsvp-section">
+            <div class="rsvp-container shadow-gold">
+                <div class="rsvp-header">
+                    <span class="sub-header">YOUR RESPONSE IS REQUESTED</span>
+                    <h2>RSVP Portal</h2>
+                    <p>Kindly reply by <strong id="displayDeadlineText">20 December 2026</strong> so we can reserve your seat.</p>
+                </div>
+
+                <form id="weddingRsvpForm" class="rsvp-form">
+                    
+                    <!-- Attendance Radio Group -->
+                    <div class="form-group full-width">
+                        <label class="section-label">Will you be attending?</label>
+                        <div class="attendance-options">
+                            <label class="radio-card selected" id="optAttending">
+                                <input type="radio" name="attendance" value="attending" checked>
+                                <div class="radio-content">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span>Accepts with Joy</span>
+                                    <small>I will be there to celebrate with Takudzwa & Huldah!</small>
+                                </div>
+                            </label>
+
+                            <label class="radio-card" id="optDeclining">
+                                <input type="radio" name="attendance" value="declining">
+                                <div class="radio-content">
+                                    <i class="fa-solid fa-circle-xmark"></i>
+                                    <span>Declines with Regret</span>
+                                    <small>Sending heartfelt love and blessings from afar.</small>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Personal Information: Full Name Only -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="guestName">Full Name *</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-user"></i>
+                                <input type="text" id="guestName" required placeholder="e.g. Tendai Moyo">
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="guestCountGroup">
+                            <label for="guestCount">Number of Allocated Seats</label>
+                            <div class="input-icon-wrapper">
+                                <i class="fa-solid fa-users"></i>
+                                <select id="guestCount">
+                                    <option value="1">1 Person (Invited Guest)</option>
+                                    <option value="2">2 Persons (Named Plus-One)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Guest Name (if 2 seats) -->
+                    <div class="form-group full-width" id="plusOneGroup" style="display: none;">
+                        <label for="plusOneNames">Full Name of Invited Plus-One</label>
+                        <input type="text" id="plusOneNames" placeholder="Please provide full name of your partner/plus-one">
+                    </div>
+
+                    <!-- Policy Acknowledgement -->
+                    <div class="form-group full-width">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="policyAcknowledge" required>
+                            <span class="checkmark"></span>
+                            <span class="checkbox-label">I acknowledge that this event is <strong>strictly by invitation only</strong> and <strong>strictly no children</strong> are permitted.</span>
+                        </label>
+                    </div>
+
+                    <!-- Message Note -->
+                    <div class="form-group full-width">
+                        <label for="guestMessage">Warm Wishes for Takudzwa & Huldah 💌</label>
+                        <textarea id="guestMessage" rows="2" placeholder="Leave a congratulatory note or blessing for the couple..."></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-submit-container">
+                        <button type="submit" class="btn-submit-gold" id="submitRsvpBtn">
+                            <span>Submit RSVP Confirmation</span>
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+        <!-- COUPLE'S BLESSING & SIGNATURE -->
+        <section class="story-section">
+            <div class="story-card glass-card">
+                <div class="story-monogram">T & H</div>
+                <h2>"Two Hearts, One Sacred Covenant"</h2>
+                <p>We are overwhelmingly grateful for your love, support, and prayers as we begin our lifetime of unity, laughter, and joy together.</p>
+                <div class="couple-signature">
+                    <span>With All Our Love,</span>
+                    <h3>Takudzwa Mwashita & Huldah Jongwe</h3>
+                    <p class="signature-date">6 January 2027</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADMIN LIVE DETAILS EDITOR FORM -->
+        <div class="admin-editor-panel" id="adminEditorPanel" style="display: none;">
+            <div class="editor-header">
+                <h3><i class="fa-solid fa-sliders"></i> Customize Wedding Details (Couple Portal)</h3>
+                <button id="closeEditorBtn" class="close-btn">&times;</button>
+            </div>
+            <div class="editor-body">
+                <form id="detailsForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editDate">Wedding Date</label>
+                            <input type="date" id="editDate" value="2027-01-06">
+                        </div>
+                        <div class="form-group">
+                            <label for="editTime">Event Time</label>
+                            <input type="text" id="editTime" value="10:00 AM – 5:00 PM">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editGroom">Groom Name</label>
+                            <input type="text" id="editGroom" value="Takudzwa Mwashita">
+                        </div>
+                        <div class="form-group">
+                            <label for="editBride">Bride Name</label>
+                            <input type="text" id="editBride" value="Huldah Jongwe">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editRsvpDeadline">RSVP Deadline</label>
+                            <input type="date" id="editRsvpDeadline" value="2026-12-20">
+                        </div>
+                        <div class="form-group">
+                            <label for="editSongUrl"><i class="fa-solid fa-music"></i> Custom Background Song URL</label>
+                            <input type="text" id="editSongUrl" value="https://youtu.be/JiZ9TJPTHaM?list=RDJiZ9TJPTHaM">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary-brown"><i class="fa-solid fa-floppy-disk"></i> Save & Apply Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ADMIN DASHBOARD MODAL (GUEST LIST SUMMARY) -->
+        <div class="modal-overlay" id="dashboardModal" style="display: none;">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3><i class="fa-solid fa-clipboard-user"></i> Guest RSVP Responses Summary</h3>
+                    <button class="close-btn" id="closeDashboardBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <span class="stat-num" id="statTotalRsvp">0</span>
+                            <span class="stat-label">Total Submissions</span>
+                        </div>
+                        <div class="stat-card stat-success">
+                            <span class="stat-num" id="statAttendingCount">0</span>
+                            <span class="stat-label">Attending Seats</span>
+                        </div>
+                        <div class="stat-card stat-decline">
+                            <span class="stat-num" id="statDecliningCount">0</span>
+                            <span class="stat-label">Declined</span>
+                        </div>
+                    </div>
+
+                    <div class="table-actions">
+                        <button id="exportCsvBtn" class="btn-small-gold"><i class="fa-solid fa-file-csv"></i> Download CSV</button>
+                        <button id="clearDataBtn" class="btn-small-danger"><i class="fa-solid fa-trash"></i> Reset Data</button>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="guest-table" id="guestTable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                    <th>Seats</th>
+                                    <th>Plus One</th>
+                                    <th>Wishes</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody id="guestTableBody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RSVP CONFIRMATION MODAL -->
+        <div class="modal-overlay" id="confirmationModal" style="display: none;">
+            <div class="modal-card confirmation-card shadow-gold">
+                <div class="modal-inner">
+                    <div class="confetti-icon">🎉</div>
+                    <h2 id="confModalTitle">RSVP Submitted Successfully!</h2>
+                    <p id="confModalMsg">Thank you, <strong id="confGuestName">Guest</strong>! Your response has been recorded.</p>
+                    
+                    <div class="ticket-receipt" id="ticketReceipt">
+                        <div class="ticket-header">
+                            <span class="ticket-brand">WEDDING RSVP TICKET</span>
+                            <span class="ticket-code" id="ticketCode">TH-2027</span>
+                        </div>
+                        <div class="ticket-body">
+                            <h4>Takudzwa Mwashita & Huldah Jongwe</h4>
+                            <p id="ticketStatus">Status: Attending with Joy ✨</p>
+                            <p id="ticketDetails">Seats: 1 | 6 January 2027 (10:00 AM – 5:00 PM)</p>
+                            <p class="ticket-notice"><i class="fa-solid fa-shield"></i> Strictly by Invitation Only • Strictly No Children</p>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button id="printTicketBtn" class="btn-primary-brown"><i class="fa-solid fa-print"></i> Print / Save Ticket</button>
+                        <button id="closeConfModalBtn" class="btn-secondary-brown">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD ZOOM MODAL -->
+        <div class="modal-overlay" id="imageZoomModal" style="display: none;">
+            <div class="modal-card image-zoom-card">
+                <button class="close-btn zoom-close-btn" id="closeZoomBtn">&times;</button>
+                <img src="assets/wedding_card.jpg" id="zoomedImgSrc" alt="Zoomed view" class="zoomed-image">
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <p>Crafted with love for the Wedding of <strong>Takudzwa Mwashita & Huldah Jongwe</strong></p>
+        <p class="footer-sub">Brown Shades & Champagne Luxury Theme • 6 January 2027</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
