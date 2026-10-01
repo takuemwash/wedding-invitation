@@ -1671,3 +1671,9 @@ section {
     #palette .selected-shade-box { padding: 6px; }
 }
 
+
+/* Couple names in the navigation header. */
+.nav-brand { font-family: var(--font-script); font-size: 2.35rem; font-weight: 400; letter-spacing: 0; line-height: 1.1; white-space: nowrap; }
+.nav-brand span { font-family: var(--font-heading); font-size: .65em; font-style: italic; }
+@media(max-width:850px) { .nav-brand { font-size: 2rem; } }
+
