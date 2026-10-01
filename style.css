@@ -1702,3 +1702,7 @@ section {
     #hero .hero-quick-actions { grid-template-columns:1fr; }
     #hero .timer-mini-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
+
+.rsvp-completed { opacity:.6; }
+.rsvp-completed-link { filter:grayscale(1); opacity:.6; cursor:default; }
+#rsvpGateNotice { color:var(--color-chocolate); font-size:.85rem; line-height:1.5; padding:12px; background:#eee6d6; border-radius:10px; margin-bottom:14px; }

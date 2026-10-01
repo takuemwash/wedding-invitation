@@ -56,11 +56,21 @@ function openInvitation() {
     document.getElementById('invitationContent').hidden = false;
     history.replaceState(null, '', location.pathname + location.search + '#hero');
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    if (document.getElementById('invitationContent').dataset.initialized) {
+        updateRsvpAvailability();
+        window.dispatchEvent(new Event('hashchange'));
+        return;
+    }
+    document.getElementById('invitationContent').dataset.initialized = 'true';
     initWeddingState();
     initCountdown();
     initSwatchesInteractive();
     initImageZoom();
-    initRsvpForm();
+    if (!document.getElementById('weddingRsvpForm').dataset.initialized) {
+        initRsvpForm();
+        document.getElementById('weddingRsvpForm').dataset.initialized = 'true';
+    }
+    updateRsvpAvailability();
 
     initCalendarLinks();
     initAudioPlayer();
@@ -348,6 +358,7 @@ function initRsvpForm() {
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (hasSubmittedRsvp()) { updateRsvpAvailability(); return; }
 
             const isAttending = document.querySelector('input[name="attendance"]:checked').value === 'attending';
             const name = document.getElementById('guestName').value.trim();
@@ -415,15 +426,18 @@ function initRsvpForm() {
                 } catch (storageError) {
                     console.warn('RSVP sent, but a local copy could not be saved.');
                 }
-                showConfirmationModal(guestEntry);
+                markRsvpSubmitted();
+                updateRsvpAvailability();
+                returnToPasswordScreen();
                 form.reset();
                 optAttending.click();
                 plusOneGroup.style.display = 'none';
             } catch (err) {
                 alert(err.message || 'Your RSVP could not be sent. Please try again or contact an RSVP coordinator.');
             } finally {
-                submitButton.disabled = false;
-                submitButton.innerHTML = originalButton;
+                submitButton.disabled = hasSubmittedRsvp();
+                if (hasSubmittedRsvp()) submitButton.textContent = 'You have already RSVP’d';
+                else submitButton.innerHTML = originalButton;
             }
         });
     }
@@ -721,4 +735,46 @@ function initCardFraming() {
     image.addEventListener('load', fit);
     new ResizeObserver(fit).observe(frame);
     fit();
+}
+const RSVP_COMPLETED_KEY = 'takudzwa_hulder_rsvp_completed';
+let rsvpCompletedInMemory = false;
+function hasSubmittedRsvp() {
+    if (rsvpCompletedInMemory) return true;
+    try { return localStorage.getItem(RSVP_COMPLETED_KEY) === 'true' || getGuestList().length > 0; }
+    catch (_) { return false; }
+}
+function markRsvpSubmitted() {
+    rsvpCompletedInMemory = true;
+    try { localStorage.setItem(RSVP_COMPLETED_KEY, 'true'); } catch (_) {}
+}
+function updateRsvpAvailability() {
+    const done = hasSubmittedRsvp();
+    const form = document.getElementById('weddingRsvpForm');
+    form.querySelectorAll('input, select, textarea, button').forEach(control => { control.disabled = done; });
+    form.classList.toggle('rsvp-completed', done);
+    if (done) document.getElementById('submitRsvpBtn').textContent = 'You have already RSVP’d';
+    document.querySelectorAll('a[href="#rsvp"]').forEach(link => {
+        if (done) {
+            link.textContent = 'Already RSVP’d';
+            link.setAttribute('aria-disabled', 'true');
+            link.classList.add('rsvp-completed-link');
+        }
+    });
+}
+function returnToPasswordScreen() {
+    document.getElementById('invitationContent').hidden = true;
+    document.getElementById('invitationGate').hidden = false;
+    document.getElementById('invitationPasswordForm').reset();
+    document.getElementById('invitationPassword').type = 'password';
+    document.getElementById('gateError').textContent = '';
+    let notice = document.getElementById('rsvpGateNotice');
+    if (!notice) {
+        notice = document.createElement('p');
+        notice.id = 'rsvpGateNotice';
+        notice.setAttribute('role', 'status');
+        document.getElementById('invitationPasswordForm').before(notice);
+    }
+    notice.textContent = 'Thank you! Your RSVP has been sent successfully. Enter the password to view the invitation again.';
+    history.replaceState(null, '', location.pathname + location.search);
+    window.scrollTo(0, 0);
 }
