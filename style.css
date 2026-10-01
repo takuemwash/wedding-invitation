@@ -1677,3 +1677,28 @@ section {
 .nav-brand span { font-family: var(--font-heading); font-size: .65em; font-style: italic; }
 @media(max-width:850px) { .nav-brand { font-size: 2rem; } }
 
+
+/* Stable paper framing for phones, tablets, landscape and desktop screens. */
+#hero .hero-card-frame { position: relative; overflow: hidden; }
+#hero .official-card-img {
+    position: absolute; left: 50%; top: 50%; max-width: none;
+    object-fit: fill; transform: translate(-50%, -59%); transform-origin: center;
+}
+.nav-brand {
+    font-family: var(--font-body); font-size: clamp(1rem, 2vw, 1.4rem);
+    font-weight: 500; letter-spacing: .5px; padding-right: 12px;
+    animation: couple-name-drift 6s ease-in-out infinite alternate;
+}
+.nav-brand span { font-family: inherit; font-size: inherit; font-style: normal; }
+@keyframes couple-name-drift { from { transform: translateX(0); } to { transform: translateX(10px); } }
+@media(max-width:850px) { .nav-brand { font-size: 1.05rem; line-height: 1.4; } }
+@media(prefers-reduced-motion:reduce) { .nav-brand { animation: none; } }
+@media(max-width:850px) and (max-height:550px) and (orientation:landscape) {
+    .top-nav { height:52px; flex-direction:row; padding:6px 12px; }
+    .nav-links { width:auto; gap:2px; }
+    .nav-links a { font-size:.65rem; padding:6px; }
+    .nav-brand { font-size:.9rem; }
+    #hero .hero-card-showcase { grid-template-columns:minmax(0,1fr) 230px; grid-template-rows:1fr; }
+    #hero .hero-quick-actions { grid-template-columns:1fr; }
+    #hero .timer-mini-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}

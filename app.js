@@ -65,6 +65,7 @@ function openInvitation() {
     initCalendarLinks();
     initAudioPlayer();
     initInvitationPages();
+    initCardFraming();
 }
 
 function initInvitationPages() {
@@ -706,3 +707,18 @@ function updateMusicButtonUI(isPlaying) {
 
 
 
+
+// Fit the invitation paper, rather than the surrounding photograph, in every frame.
+function initCardFraming() {
+    const frame = document.querySelector('.hero-card-frame');
+    const image = document.querySelector('.official-card-img');
+    const fit = () => {
+        if (!image.naturalWidth || !frame.clientWidth || !frame.clientHeight) return;
+        const scale = Math.min(frame.clientWidth / (image.naturalWidth * .64), frame.clientHeight / (image.naturalHeight * .49));
+        image.style.width = `${image.naturalWidth * scale}px`;
+        image.style.height = `${image.naturalHeight * scale}px`;
+    };
+    image.addEventListener('load', fit);
+    new ResizeObserver(fit).observe(frame);
+    fit();
+}
