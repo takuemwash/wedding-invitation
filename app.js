@@ -6,8 +6,13 @@
  * Strictly by invitation only & Strictly No Children
  */
 
-// Web3Forms public form access key, issued for the RSVP recipient's email.
-const RSVP_ACCESS_KEY = '239fbfdf-099a-4c8c-92ba-b05e17c94e58';
+// Public submission endpoint; the private tracker is never exposed.
+const RSVP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbySW-qQZQsF6uH6kxPLhSb7GpwY7287PsuTTht1FCLO4iiCfZDei7cCJbshl4O9UNDUEQ/exec';
+function rsvpIdentity(key) {
+    let value = localStorage.getItem(key);
+    if (!value) { value = crypto.randomUUID(); localStorage.setItem(key, value); }
+    return value;
+}
 
 // Initial Default State
 const defaultWeddingState = {
@@ -378,7 +383,7 @@ function initRsvpForm() {
             }
 
             const guestEntry = {
-                id: 'TH-' + Math.floor(1000 + Math.random() * 9000),
+                id: rsvpIdentity('takudzwa_hulder_rsvp_request'),
                 name,
                 attendance: isAttending ? 'Attending' : 'Declined',
                 guestsCount,
@@ -393,32 +398,22 @@ function initRsvpForm() {
             submitButton.disabled = true;
             submitButton.textContent = 'Sending RSVP…';
             try {
-                if (!RSVP_ACCESS_KEY) {
-                    throw new Error('Online RSVP delivery is not ready yet. Please contact an RSVP coordinator using the WhatsApp links above.');
-                }
-                const response = await fetch('https://api.web3forms.com/submit', {
+                const response = await fetch(RSVP_ENDPOINT, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Content-Type': 'text/plain;charset=UTF-8'
                     },
                     body: JSON.stringify({
-                        access_key: RSVP_ACCESS_KEY,
-                        subject: `New Wedding RSVP: ${name} (${isAttending ? 'Attending' : 'Declined'})`,
-                        from_name: 'Takudzwa & Hulder Wedding RSVP Portal',
-                        guest_name: name,
-                        attendance_status: isAttending ? 'Joyfully Attending' : 'Regretfully Declined',
-                        allocated_seats: guestsCount,
-                        plus_one_name: plusOneNames || 'N/A',
-                        guest_wishes: message || 'N/A',
-                        submission_date: guestEntry.submittedAt
+                        ...guestEntry,
+                        browserId: rsvpIdentity('takudzwa_hulder_browser_id'),
+                        acknowledged: true
                     })
                 });
                 const result = await response.json();
                 if (!response.ok || result.success !== true) {
                     throw new Error('Your RSVP could not be sent. Please try again or contact an RSVP coordinator using the WhatsApp links above.');
                 }
-                // Keep a browser-local copy only after the email service accepts the RSVP.
+                // Keep a browser-local copy only after the shared tracker confirms the RSVP.
                 try {
                     const guests = getGuestList();
                     guests.unshift(guestEntry);
