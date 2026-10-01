@@ -64,6 +64,29 @@ function openInvitation() {
 
     initCalendarLinks();
     initAudioPlayer();
+    initInvitationPages();
+}
+
+function initInvitationPages() {
+    const pageIds = ['hero', 'palette', 'details', 'contacts', 'rsvp'];
+    const showPage = () => {
+        const requested = location.hash.slice(1);
+        const active = pageIds.includes(requested) ? requested : 'hero';
+        document.querySelectorAll('#invitationContent main > section').forEach(section => {
+            section.hidden = section.id !== active;
+            if (!section.hidden) section.scrollTop = 0;
+        });
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            if (link.hash === '#' + active) link.setAttribute('aria-current', 'page');
+            else link.removeAttribute('aria-current');
+        });
+        const navHeight = document.querySelector('.top-nav').getBoundingClientRect().height;
+        document.documentElement.style.setProperty('--nav-height', navHeight + 'px');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    };
+    window.addEventListener('hashchange', showPage);
+    window.addEventListener('resize', showPage);
+    showPage();
 }
 
 function initInvitationGate() {
