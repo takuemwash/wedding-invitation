@@ -1,5 +1,5 @@
 /**
- * TAKUDZWA MWASHITA & HULDAH JONGWE - RSVP WEDDING PORTAL
+ * TAKUDZWA MWASHITA & HULDER JONGWE - RSVP WEDDING PORTAL
  * Date: 6 January 2027 (10:00 AM – 5:00 PM)
  * RSVP Deadline: 20 December 2026
  * Contacts: Rufaro Govere (+263773571221) & Hulder Jongwe (+263787896967)
@@ -12,7 +12,7 @@ const RSVP_ACCESS_KEY = '239fbfdf-099a-4c8c-92ba-b05e17c94e58';
 // Initial Default State
 const defaultWeddingState = {
     groom: 'Takudzwa Mwashita',
-    bride: 'Huldah Jongwe',
+    bride: 'Hulder Jongwe',
     date: '2027-01-06T10:00:00',
     timeText: '10:00 AM – 5:00 PM',
     rsvpDeadline: '2026-12-20',
@@ -36,6 +36,18 @@ window.addEventListener('pageshow', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    setupMusicSource(defaultWeddingState.songUrl);
+    // Retry sound on the first gesture if the browser blocks autoplay on arrival.
+    const retryMusic = (event) => {
+        if (event.target.closest && event.target.closest('#musicToggleBtn')) return;
+        if (!isAudioPlaying) playMusic();
+        if (isAudioPlaying) {
+            document.removeEventListener('pointerdown', retryMusic);
+            document.removeEventListener('keydown', retryMusic);
+        }
+    };
+    document.addEventListener('pointerdown', retryMusic);
+    document.addEventListener('keydown', retryMusic);
     initInvitationGate();
 });
 
@@ -80,7 +92,7 @@ function initInvitationGate() {
             // This is a browser-level invitation gate, not server-side authorization.
             const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.value));
             const hash = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
-            if (hash !== '51aab9f9d3b8bc1720529b43e16abe1669dc76e4ee69fff3ff96a8c72a535216') {
+            if (hash !== '225358139726f6845d8d22289735e65562206b84fbf7185c865c9a7b7d8d7243') {
                 error.textContent = 'That password does not match. Please check your invitation and try again.';
                 input.setAttribute('aria-invalid', 'true');
                 input.focus();
@@ -100,12 +112,12 @@ function initInvitationGate() {
    1. STATE MANAGEMENT & UI UPDATE
    ========================================== */
 function getWeddingState() {
-    const saved = localStorage.getItem('takudzwa_huldah_wedding_state_v3');
+    const saved = localStorage.getItem('takudzwa_hulder_wedding_state_v3');
     return saved ? JSON.parse(saved) : defaultWeddingState;
 }
 
 function saveWeddingState(state) {
-    localStorage.setItem('takudzwa_huldah_wedding_state_v3', JSON.stringify(state));
+    localStorage.setItem('takudzwa_hulder_wedding_state_v3', JSON.stringify(state));
     updateUIWithState(state);
     setupMusicSource(state.songUrl);
 }
@@ -235,8 +247,8 @@ function initImageZoom() {
 
     if (cardTrigger) {
         cardTrigger.addEventListener('click', () => {
-            zoomedImg.src = 'assets/wedding_card.jpg';
-            zoomedImg.alt = 'Takudzwa & Huldah Wedding Invitation Card';
+            zoomedImg.src = 'assets/wedding_card_hulder.png';
+            zoomedImg.alt = 'Takudzwa & Hulder Wedding Invitation Card';
             zoomModal.style.display = 'flex';
         });
     }
@@ -268,12 +280,12 @@ function initImageZoom() {
    5. RSVP FORM & GUEST MANAGEMENT
    ========================================== */
 function getGuestList() {
-    const stored = localStorage.getItem('takudzwa_huldah_wedding_guests_v3');
+    const stored = localStorage.getItem('takudzwa_hulder_wedding_guests_v3');
     return stored ? JSON.parse(stored) : [];
 }
 
 function saveGuestList(list) {
-    localStorage.setItem('takudzwa_huldah_wedding_guests_v3', JSON.stringify(list));
+    localStorage.setItem('takudzwa_hulder_wedding_guests_v3', JSON.stringify(list));
 }
 
 function initRsvpForm() {
@@ -358,7 +370,7 @@ function initRsvpForm() {
                     body: JSON.stringify({
                         access_key: RSVP_ACCESS_KEY,
                         subject: `New Wedding RSVP: ${name} (${isAttending ? 'Attending' : 'Declined'})`,
-                        from_name: 'Takudzwa & Huldah Wedding RSVP Portal',
+                        from_name: 'Takudzwa & Hulder Wedding RSVP Portal',
                         guest_name: name,
                         attendance_status: isAttending ? 'Joyfully Attending' : 'Regretfully Declined',
                         allocated_seats: guestsCount,
@@ -439,7 +451,7 @@ function showConfirmationModal(guest) {
         confTitle.textContent = 'Response Recorded';
         confMsg.innerHTML = `Thank you for letting us know, <strong>${guest.name}</strong>. You will be dearly missed!`;
         ticketStatus.textContent = 'Status: Regretfully Declined';
-        ticketDetails.textContent = `Sending Love to Takudzwa & Huldah`;
+        ticketDetails.textContent = `Sending Love to Takudzwa & Hulder`;
     }
 
     confModal.style.display = 'flex';
@@ -474,8 +486,8 @@ function initCalendarLinks() {
         });
     }
 
-    const title = encodeURIComponent('Wedding: Takudzwa Mwashita & Huldah Jongwe');
-    const details = encodeURIComponent('Wedding Celebration for Takudzwa Mwashita and Huldah Jongwe.\nTime: 10:00 AM – 5:00 PM.\nStrictly by invitation only & Strictly No Children.\nDress Code: Brown Shades & Formal Elegance.');
+    const title = encodeURIComponent('Wedding: Takudzwa Mwashita & Hulder Jongwe');
+    const details = encodeURIComponent('Wedding Celebration for Takudzwa Mwashita and Hulder Jongwe.\nTime: 10:00 AM – 5:00 PM.\nStrictly by invitation only & Strictly No Children.\nDress Code: Brown Shades & Formal Elegance.');
     const location = encodeURIComponent('Harare, Zimbabwe');
     const dates = '20270106T080000Z/20270106T150000Z';
 
@@ -496,12 +508,12 @@ function generateICSFile() {
     const icsContent = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
-        'PRODID:-//Takudzwa and Huldah Wedding//EN',
+        'PRODID:-//Takudzwa and Hulder Wedding//EN',
         'CALSCALE:GREGORIAN',
         'METHOD:PUBLISH',
         'BEGIN:VEVENT',
-        'SUMMARY:Wedding of Takudzwa Mwashita & Huldah Jongwe',
-        'DESCRIPTION:Celebration of the Marriage of Takudzwa Mwashita and Huldah Jongwe. 10:00 AM - 5:00 PM. Strictly by invitation only & Strictly No Children.',
+        'SUMMARY:Wedding of Takudzwa Mwashita & Hulder Jongwe',
+        'DESCRIPTION:Celebration of the Marriage of Takudzwa Mwashita and Hulder Jongwe. 10:00 AM - 5:00 PM. Strictly by invitation only & Strictly No Children.',
         'LOCATION:Harare, Zimbabwe',
         'DTSTART:20270106T080000Z',
         'DTEND:20270106T150000Z',
@@ -514,7 +526,7 @@ function generateICSFile() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Takudzwa_Huldah_Wedding_2027.ics');
+    link.setAttribute('download', 'Takudzwa_Hulder_Wedding_2027.ics');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -529,6 +541,8 @@ let autoPlayAttempted = false;
 function initAudioPlayer() {
     const musicBtn = document.getElementById('musicToggleBtn');
     const state = getWeddingState();
+    if (!ytPlayer) setupMusicSource(state.songUrl);
+    playMusic();
 
     if (musicBtn) {
         musicBtn.addEventListener('click', (e) => {
@@ -592,14 +606,19 @@ function initYouTubePlayer(videoId) {
                     onReady: (event) => {
                         isYtReady = true;
                         event.target.playVideo();
-                        isAudioPlaying = true;
-                        updateMusicButtonUI(true);
                     },
                     onStateChange: (event) => {
                         if (event.data === YT.PlayerState.PLAYING) {
                             isAudioPlaying = true;
                             updateMusicButtonUI(true);
+                        } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                            isAudioPlaying = false;
+                            updateMusicButtonUI(false);
                         }
+                    },
+                    onAutoplayBlocked: () => {
+                        isAudioPlaying = false;
+                        updateMusicButtonUI(false);
                     }
                 }
             });
@@ -621,8 +640,6 @@ function playMusic() {
     if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
         try {
             ytPlayer.playVideo();
-            isAudioPlaying = true;
-            updateMusicButtonUI(true);
         } catch (e) {}
     } else if (audio && audio.src) {
         audio.play().then(() => {
@@ -662,4 +679,6 @@ function updateMusicButtonUI(isPlaying) {
         musicBtn.style.boxShadow = 'var(--shadow-deep)';
     }
 }
+
+
 
