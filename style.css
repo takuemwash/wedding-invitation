@@ -371,14 +371,14 @@ section {
    ========================================================================== */
 .hero-section {
     min-height: calc(100vh - 52px);
-    height: calc(100vh - 52px);
-    padding: 10px 16px 14px;
+    height: auto;
+    padding: 18px 16px 28px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .hero-card-showcase {
@@ -387,7 +387,7 @@ section {
     align-items: center;
     gap: 12px;
     width: 100%;
-    max-width: 540px;
+    max-width: 720px;
     animation: fadeIn 0.4s ease;
 }
 
@@ -402,8 +402,8 @@ section {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: auto;
-    max-width: 480px;
+    width: 100%;
+    max-width: 720px;
 }
 
 .hero-card-frame:hover {
@@ -412,10 +412,10 @@ section {
 }
 
 .official-card-img {
-    width: auto;
+    width: 100%;
     height: auto;
     display: block;
-    max-height: calc(100svh - 250px);
+    max-height: none;
     max-width: 100%;
     object-fit: contain;
 }
@@ -1360,7 +1360,7 @@ section {
 
 /* Image Zoom Card */
 .image-zoom-card {
-    max-width: 400px;
+    max-width: 900px;
     padding: 10px;
     background: #24140F;
 }
