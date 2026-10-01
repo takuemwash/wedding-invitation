@@ -28,6 +28,13 @@ const defaultWeddingState = {
 let ytPlayer = null;
 let isYtReady = false;
 
+// Every newly opened invitation starts on the card, including shared section links.
+window.addEventListener('pageshow', () => {
+    history.scrollRestoration = 'manual';
+    history.replaceState(null, '', location.pathname + location.search + '#hero');
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     initWeddingState();
     initCountdown();
