@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Retry sound on the first gesture if the browser blocks autoplay on arrival.
     const retryMusic = (event) => {
         if (event.target.closest && event.target.closest('#musicToggleBtn')) return;
-        if (!isAudioPlaying) playMusic();
+        if (musicWanted && !isAudioPlaying) playMusic();
         if (isAudioPlaying) {
             document.removeEventListener('pointerdown', retryMusic);
             document.removeEventListener('keydown', retryMusic);
@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function openInvitation() {
+    musicWanted = true;
     document.getElementById('invitationGate').hidden = true;
     document.getElementById('invitationContent').hidden = false;
     history.replaceState(null, '', location.pathname + location.search + '#hero');
@@ -586,7 +587,17 @@ function generateICSFile() {
    8. AUDIO & MUSIC PLAYER SUPPORT WITH AUTOPLAY
    ========================================== */
 let isAudioPlaying = false;
-let autoPlayAttempted = false;
+let musicWanted = true;
+
+// Stop both players when leaving, locking the phone, or switching apps/tabs.
+function stopMusicOnExit() {
+    musicWanted = false;
+    pauseMusic();
+}
+window.addEventListener('pagehide', stopMusicOnExit);
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopMusicOnExit();
+});
 
 function initAudioPlayer() {
     const musicBtn = document.getElementById('musicToggleBtn');
@@ -598,8 +609,10 @@ function initAudioPlayer() {
         musicBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (isAudioPlaying) {
+                musicWanted = false;
                 pauseMusic();
             } else {
+                musicWanted = true;
                 setupMusicSource(state.songUrl);
                 playMusic();
             }
@@ -637,15 +650,15 @@ function setupMusicSource(songUrl) {
 function initYouTubePlayer(videoId) {
     if (window.YT && window.YT.Player) {
         if (ytPlayer) {
-            ytPlayer.loadVideoById(videoId);
-            ytPlayer.playVideo();
+            ytPlayer.cueVideoById(videoId);
+            playMusic();
         } else {
             ytPlayer = new YT.Player('youtubePlayer', {
                 height: '1',
                 width: '1',
                 videoId: videoId,
                 playerVars: {
-                    autoplay: 1,
+                    autoplay: 0,
                     controls: 0,
                     loop: 1,
                     playlist: videoId,
@@ -656,10 +669,11 @@ function initYouTubePlayer(videoId) {
                     onReady: (event) => {
                         event.target.setVolume(35);
                         isYtReady = true;
-                        event.target.playVideo();
+                        playMusic();
                     },
                     onStateChange: (event) => {
                         if (event.data === YT.PlayerState.PLAYING) {
+                            if (document.hidden || !musicWanted) { pauseMusic(); return; }
                             isAudioPlaying = true;
                             updateMusicButtonUI(true);
                         } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
@@ -686,6 +700,7 @@ function onYouTubeIframeAPIReady() {
 }
 
 function playMusic() {
+    if (document.hidden || !musicWanted) return;
     const audio = document.getElementById('weddingAudio');
 
     if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
@@ -694,6 +709,7 @@ function playMusic() {
         } catch (e) {}
     } else if (audio && audio.src) {
         audio.play().then(() => {
+            if (document.hidden || !musicWanted) { audio.pause(); return; }
             isAudioPlaying = true;
             updateMusicButtonUI(true);
         }).catch(() => {});
