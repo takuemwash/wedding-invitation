@@ -304,7 +304,7 @@ function initImageZoom() {
 
     if (cardTrigger) {
         cardTrigger.addEventListener('click', () => {
-            zoomedImg.src = 'assets/wedding_card_hulder.png';
+            zoomedImg.src = 'assets/wedding_card_titlecase.png';
             zoomedImg.alt = 'Takudzwa & Hulder Wedding Invitation Card';
             zoomModal.style.display = 'flex';
         });
