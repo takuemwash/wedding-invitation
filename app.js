@@ -8,9 +8,26 @@
 
 // Public submission endpoint; the private tracker is never exposed.
 const RSVP_ENDPOINT = 'https://script.google.com/macros/s/AKfycbySW-qQZQsF6uH6kxPLhSb7GpwY7287PsuTTht1FCLO4iiCfZDei7cCJbshl4O9UNDUEQ/exec';
+// Private mode and some in-app browsers deny persistent storage.
+const memoryStorage = {};
+const safeStorage = {
+    getItem(key) {
+        try { return localStorage.getItem(key) || memoryStorage[key] || null; }
+        catch (_) { return memoryStorage[key] || null; }
+    },
+    setItem(key, value) {
+        memoryStorage[key] = String(value);
+        try { localStorage.setItem(key, value); } catch (_) {}
+    }
+};
 function rsvpIdentity(key) {
-    let value = localStorage.getItem(key);
-    if (!value) { value = crypto.randomUUID(); localStorage.setItem(key, value); }
+    let value = safeStorage.getItem(key);
+    if (!value) {
+        value = window.crypto && typeof window.crypto.randomUUID === 'function'
+            ? window.crypto.randomUUID()
+            : 'TH-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+        safeStorage.setItem(key, value);
+    }
     return value;
 }
 
@@ -41,7 +58,8 @@ window.addEventListener('pageshow', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    setupMusicSource(defaultWeddingState.songUrl);
+    initInvitationGate();
+    try { setupMusicSource(defaultWeddingState.songUrl); } catch (_) {}
     // Retry sound on the first gesture if the browser blocks autoplay on arrival.
     const retryMusic = (event) => {
         if (event.target.closest && event.target.closest('#musicToggleBtn')) return;
@@ -53,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     document.addEventListener('pointerdown', retryMusic);
     document.addEventListener('keydown', retryMusic);
-    initInvitationGate();
 });
 
 function openInvitation() {
@@ -129,9 +146,8 @@ function initInvitationGate() {
         error.textContent = '';
         try {
             // This is a browser-level invitation gate, not server-side authorization.
-            const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.value));
-            const hash = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
-            if (hash !== '225358139726f6845d8d22289735e65562206b84fbf7185c865c9a7b7d8d7243') {
+            // This existing client-side gate does not require Web Crypto support.
+            if (input.value !== 'takuhulder') {
                 error.textContent = 'That password does not match. Please check your invitation and try again.';
                 input.setAttribute('aria-invalid', 'true');
                 input.focus();
@@ -151,12 +167,13 @@ function initInvitationGate() {
    1. STATE MANAGEMENT & UI UPDATE
    ========================================== */
 function getWeddingState() {
-    const saved = localStorage.getItem('takudzwa_hulder_wedding_state_v3');
-    return saved ? JSON.parse(saved) : defaultWeddingState;
+    const saved = safeStorage.getItem('takudzwa_hulder_wedding_state_v3');
+    try { return saved ? Object.assign({}, defaultWeddingState, JSON.parse(saved)) : defaultWeddingState; }
+    catch (_) { return defaultWeddingState; }
 }
 
 function saveWeddingState(state) {
-    localStorage.setItem('takudzwa_hulder_wedding_state_v3', JSON.stringify(state));
+    safeStorage.setItem('takudzwa_hulder_wedding_state_v3', JSON.stringify(state));
     updateUIWithState(state);
     setupMusicSource(state.songUrl);
 }
@@ -319,12 +336,12 @@ function initImageZoom() {
    5. RSVP FORM & GUEST MANAGEMENT
    ========================================== */
 function getGuestList() {
-    const stored = localStorage.getItem('takudzwa_hulder_wedding_guests_v3');
+    const stored = safeStorage.getItem('takudzwa_hulder_wedding_guests_v3');
     return stored ? JSON.parse(stored) : [];
 }
 
 function saveGuestList(list) {
-    localStorage.setItem('takudzwa_hulder_wedding_guests_v3', JSON.stringify(list));
+    safeStorage.setItem('takudzwa_hulder_wedding_guests_v3', JSON.stringify(list));
 }
 
 function initRsvpForm() {
@@ -728,19 +745,20 @@ function initCardFraming() {
         image.style.height = `${image.naturalHeight * scale}px`;
     };
     image.addEventListener('load', fit);
-    new ResizeObserver(fit).observe(frame);
+    if (typeof ResizeObserver === 'function') new ResizeObserver(fit).observe(frame);
+    window.addEventListener('resize', fit);
     fit();
 }
 const RSVP_COMPLETED_KEY = 'takudzwa_hulder_rsvp_completed';
 let rsvpCompletedInMemory = false;
 function hasSubmittedRsvp() {
     if (rsvpCompletedInMemory) return true;
-    try { return localStorage.getItem(RSVP_COMPLETED_KEY) === 'true' || getGuestList().length > 0; }
+    try { return safeStorage.getItem(RSVP_COMPLETED_KEY) === 'true' || getGuestList().length > 0; }
     catch (_) { return false; }
 }
 function markRsvpSubmitted() {
     rsvpCompletedInMemory = true;
-    try { localStorage.setItem(RSVP_COMPLETED_KEY, 'true'); } catch (_) {}
+    try { safeStorage.setItem(RSVP_COMPLETED_KEY, 'true'); } catch (_) {}
 }
 function updateRsvpAvailability() {
     const done = hasSubmittedRsvp();
